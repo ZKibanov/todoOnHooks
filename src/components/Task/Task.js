@@ -11,7 +11,6 @@ const Task = (props) =>{
 
   const turnToEdit = () => {
     setEditing(true);
-    // moj nu ego nax, zachev function?
   };
 
   const onSubmit = (ev) => {
