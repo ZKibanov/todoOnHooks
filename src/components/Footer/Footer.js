@@ -3,19 +3,6 @@ import PropTypes from 'prop-types';
 import TasksFilter from '../TasksFilter';
 
 const Footer = (props) => {
-  Footer.defaultProps = {
-    count: 0,
-    filterTasks: () => {},
-    clearCompleted: () => {},
-    filterOption: 'all',
-  };
-
-  Footer.propTypes = {
-    count: PropTypes.number,
-    filterTasks: PropTypes.func,
-    clearCompleted: PropTypes.func,
-    filterOption: PropTypes.string,
-  };
 
   const { count, clearCompleted, filterTasks, filterOption } = props;
 
@@ -28,6 +15,20 @@ const Footer = (props) => {
       </button>
     </footer>
   );
+};
+
+Footer.defaultProps = {
+  count: 0,
+  filterTasks: () => {},
+  clearCompleted: () => {},
+  filterOption: 'all',
+};
+
+Footer.propTypes = {
+  count: PropTypes.number,
+  filterTasks: PropTypes.func,
+  clearCompleted: PropTypes.func,
+  filterOption: PropTypes.string,
 };
 
 export default Footer;

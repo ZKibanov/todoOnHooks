@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react';
+import React, { useState } from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import ruLocale from 'date-fns/locale/ru'
 import PropTypes from 'prop-types';
@@ -11,7 +11,7 @@ const Task = (props) =>{
 
   const turnToEdit = () => {
     setEditing(true);
-    //moj nu ego nax, zachev function?
+    // moj nu ego nax, zachev function?
   };
 
   const onSubmit = (ev) => {
@@ -44,7 +44,7 @@ const Task = (props) =>{
         <input className="toggle" type="checkbox" checked={completed} onChange={onDone} />
         <label>
           <span className="title">{description}</span>
-          <span className="created">{'создана '+ formatDistanceToNow(created, { addSuffix:true,locale:ruLocale, includeSeconds: true })}</span>
+          <span className="created">{`создана ${ formatDistanceToNow(created, { addSuffix:true,locale:ruLocale, includeSeconds: true })}`}</span>
           {timer}
         </label>
         <button aria-label="edit" type="button" className="icon icon-edit" onClick={turnToEdit} />
