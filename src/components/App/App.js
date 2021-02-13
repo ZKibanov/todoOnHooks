@@ -41,6 +41,7 @@ const App = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect (() => setTasks(tasks),[])
+  useEffect (() => localStorage.setItem('tasks', JSON.stringify(tasksArray)),[tasksArray])
 
   function findId (someArray, id){
     return someArray.findIndex((el) => el.id === id);
@@ -58,7 +59,6 @@ const App = () => {
       const idx = findId(oldTasks, id);
       const newTasksArray = [...oldTasks];
       newTasksArray[idx].completed = !newTasksArray[idx].completed;
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
   });
 
@@ -67,7 +67,6 @@ const App = () => {
       const before = oldTasks.slice(0, idx);
       const after = oldTasks.slice(idx + 1);
       const newTasksArray = [...before, ...after];
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
     });
 
@@ -85,7 +84,6 @@ const App = () => {
     setTasks(( oldTasks ) => {
       const newItem = generateTaskObject(text.trim(), false, timeLeft, Date.now(), newItemId);
       const newTasksArray = [...oldTasks, newItem];
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray ;
     });
   };
@@ -98,15 +96,13 @@ const App = () => {
       const after = oldTasks.slice(idx + 1);
       const newItem = generateTaskObject(text.trim(), false, oldTasks[idx].timeLeft, Date.now(), id);
       const newTasksArray = [...before, newItem, ...after];
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray ;
     });
   };
 
   const removeAllCompleted = () => {
-    setTasks(() => {
-      const newTasksArray = tasksArray.filter((el) => el.completed === false);
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
+    setTasks((oldTasks) => {
+      const newTasksArray = oldTasks.filter((el) => el.completed === false);
       return newTasksArray;
     });
   };
@@ -150,7 +146,6 @@ const App = () => {
       const idx = findId(oldTasks, id);
       const newTasksArray = [...oldTasks];
       newTasksArray[idx].countdown = true;
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
     });
   };
@@ -161,7 +156,6 @@ const App = () => {
       const newTasksArray = [...oldTasks];
       newTasksArray[idx].countdown = false;
       newTasksArray[idx].timeLeft = date;
-      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
     });
   };
