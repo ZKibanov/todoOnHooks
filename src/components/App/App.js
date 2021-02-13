@@ -39,7 +39,8 @@ const App = () => {
   const count = tasks.filter((el) => !el.completed).length;
   const [tasksArray, setTasks] = useState([]);
 
-  useEffect (() => setTasks(tasks),[ ])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect (() => setTasks(tasks),[])
 
   function findId (someArray, id){
     return someArray.findIndex((el) => el.id === id);
@@ -53,18 +54,18 @@ const App = () => {
     id: idNum,
   });
 
-  const markAsDone = (id) => setTasks(( tasksArray ) => {
-      const idx = findId(tasksArray, id);
-      const newTasks = [...tasksArray];
-      newTasks[idx].completed = !newTasks[idx].completed;
-      localStorage.setItem('tasks', JSON.stringify(newTasks));
-      return newTasks;
+  const markAsDone = (id) => setTasks((oldTasks) => {
+      const idx = findId(oldTasks, id);
+      const newTasksArray = [...oldTasks];
+      newTasksArray[idx].completed = !newTasksArray[idx].completed;
+      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
+      return newTasksArray;
   });
 
-  const deleteItem = (id) => setTasks(( tasksArray ) => {
-      const idx = findId(tasksArray, id);
-      const before = tasksArray.slice(0, idx);
-      const after = tasksArray.slice(idx + 1);
+  const deleteItem = (id) => setTasks(( oldTasks ) => {
+      const idx = findId(oldTasks, id);
+      const before = oldTasks.slice(0, idx);
+      const after = oldTasks.slice(idx + 1);
       const newTasksArray = [...before, ...after];
       localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
@@ -81,9 +82,9 @@ const App = () => {
     const timeLeft = (minuts * 60 + Number(seconds)) * 1000;
     const newItemId = elId + 1;
     elId += 1;
-    setTasks(( tasksArray ) => {
+    setTasks(( oldTasks ) => {
       const newItem = generateTaskObject(text.trim(), false, timeLeft, Date.now(), newItemId);
-      const newTasksArray = [...tasksArray, newItem];
+      const newTasksArray = [...oldTasks, newItem];
       localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray ;
     });
@@ -91,11 +92,11 @@ const App = () => {
 
   const renameItem = (text, id) => {
     if (!text) return;
-    setTasks(( tasksArray ) => {
-      const idx = findId(tasksArray, id);
-      const before = tasksArray.slice(0, idx);
-      const after = tasksArray.slice(idx + 1);
-      const newItem = generateTaskObject(text.trim(), false, tasksArray[idx].timeLeft, Date.now(), id);
+    setTasks(( oldTasks ) => {
+      const idx = findId(oldTasks, id);
+      const before = oldTasks.slice(0, idx);
+      const after = oldTasks.slice(idx + 1);
+      const newItem = generateTaskObject(text.trim(), false, oldTasks[idx].timeLeft, Date.now(), id);
       const newTasksArray = [...before, newItem, ...after];
       localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray ;
@@ -124,8 +125,8 @@ const App = () => {
   };
   
  const updateTimers = () => {
-   setTasks((tasksArray)=>{
-    const newTasksArray = [...tasksArray];
+   setTasks((oldTasks)=>{
+    const newTasksArray = [...oldTasks];
     for (let i = 0; i < newTasksArray.length; i++) {
       if (newTasksArray[i].timeLeft > 1000 && newTasksArray[i].countdown) {
         newTasksArray[i].timeLeft -= 1000;
@@ -145,9 +146,9 @@ const App = () => {
   },[ ])
 
   const turnOnCountdown = (id) => {
-    setTasks(( tasksArray ) => {
-      const idx = findId(tasksArray, id);
-      const newTasksArray = [...tasksArray];
+    setTasks(( oldTasks ) => {
+      const idx = findId(oldTasks, id);
+      const newTasksArray = [...oldTasks];
       newTasksArray[idx].countdown = true;
       localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
@@ -155,9 +156,9 @@ const App = () => {
   };
 
   const turnOffCountdown = (id, date) => {
-    setTasks((tasksArray) => {
-      const idx = findId(tasksArray, id);
-      const newTasksArray = [...tasksArray];
+    setTasks((oldTasks) => {
+      const idx = findId(oldTasks, id);
+      const newTasksArray = [...oldTasks];
       newTasksArray[idx].countdown = false;
       newTasksArray[idx].timeLeft = date;
       localStorage.setItem('tasks', JSON.stringify(newTasksArray));
@@ -166,10 +167,10 @@ const App = () => {
   };
 
   return (
+    <MyContext.Provider value={applyFilter()}>
     <section className="todoapp">
       <NewTaskForm onItemAdded={(text, minuts, seconds) => addItem(text, minuts, seconds)} />
       <section className="main">
-        <MyContext.Provider value={applyFilter()}>
         <TaskList
           tasks={applyFilter()}
           onDeleted={deleteItem}
@@ -178,7 +179,6 @@ const App = () => {
           turnOffCountdown={turnOffCountdown}
           turnOnCountdown={turnOnCountdown}
         />
-        </MyContext.Provider>
         <Footer
           filterTasks={filterTasks}
           filterOption={filterOption}
@@ -187,6 +187,8 @@ const App = () => {
         />
       </section>
     </section>
+    </MyContext.Provider>
+
   );
 }
 

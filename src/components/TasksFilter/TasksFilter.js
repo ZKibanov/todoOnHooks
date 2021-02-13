@@ -11,13 +11,13 @@ const TasksFilter = (props) => {
 
   TasksFilter.propTypes = {
     filterTasks: PropTypes.func,
-    filterOption: PropTypes.string,
+    filterOption: PropTypes.objectOf(PropTypes.string),
   };
 
   return (
     <ul className="filters">
       <li>
-        <button type="button" className={filterOption === 'all' ? 'selected' : null} onClick={() => filterTasks('all')}>
+        <button type="button" className={filterOption.filter === 'all' ? 'selected' : null} onClick={() => filterTasks('all')}>
           All
         </button>
       </li>
@@ -25,7 +25,7 @@ const TasksFilter = (props) => {
       <li>
         <button
           type="button"
-          className={filterOption === 'active' ? 'selected' : null}
+          className={filterOption.filter === 'active' ? 'selected' : null}
           onClick={() => filterTasks('active')}
         >
           Active
@@ -35,7 +35,7 @@ const TasksFilter = (props) => {
       <li>
         <button
           type="button"
-          className={filterOption === 'completed' ? 'selected' : null}
+          className={filterOption.filter === 'completed' ? 'selected' : null}
           onClick={() => filterTasks('completed')}
         >
           Completed

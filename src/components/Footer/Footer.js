@@ -28,7 +28,7 @@ Footer.propTypes = {
   count: PropTypes.number,
   filterTasks: PropTypes.func,
   clearCompleted: PropTypes.func,
-  filterOption: PropTypes.string,
+  filterOption: PropTypes.objectOf(PropTypes.string),
 };
 
 export default Footer;
