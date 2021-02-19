@@ -1,14 +1,13 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import NewTaskForm from '../NewTaskForm';
 import TaskList from '../TaskList';
 import Footer from '../Footer';
-
-const MyContext = React.createContext();
+import MyContext from '../Context/Context';
 
 let elId = Date.now() + 1;
 
 const App = () => {
-  const [filterOption, setFilter] = useState({filter:'all'});
+  const [filterOption, setFilter] = useState({ filter: 'all' });
 
   let tasks;
   if (!localStorage.getItem('tasks')) {
@@ -40,12 +39,12 @@ const App = () => {
   const [tasksArray, setTasks] = useState([]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect (() => setTasks(tasks),[])
-  useEffect (() => localStorage.setItem('tasks', JSON.stringify(tasksArray)),[tasksArray])
+  useEffect(() => setTasks(tasks), []);
+  useEffect(() => localStorage.setItem('tasks', JSON.stringify(tasksArray)), [tasksArray]);
 
-  function findId (someArray, id){
+  function findId(someArray, id) {
     return someArray.findIndex((el) => el.id === id);
-  } 
+  }
 
   const generateTaskObject = (descriptionText, completedStatus = false, timer, createdDate, idNum) => ({
     description: descriptionText,
@@ -55,14 +54,16 @@ const App = () => {
     id: idNum,
   });
 
-  const markAsDone = (id) => setTasks((oldTasks) => {
+  const markAsDone = (id) =>
+    setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const newTasksArray = [...oldTasks];
       newTasksArray[idx].completed = !newTasksArray[idx].completed;
       return newTasksArray;
-  });
+    });
 
-  const deleteItem = (id) => setTasks(( oldTasks ) => {
+  const deleteItem = (id) =>
+    setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const before = oldTasks.slice(0, idx);
       const after = oldTasks.slice(idx + 1);
@@ -72,7 +73,7 @@ const App = () => {
 
   const filterTasks = (filter) => {
     setFilter({
-      filter
+      filter,
     });
   };
 
@@ -81,22 +82,22 @@ const App = () => {
     const timeLeft = (minuts * 60 + Number(seconds)) * 1000;
     const newItemId = elId + 1;
     elId += 1;
-    setTasks(( oldTasks ) => {
+    setTasks((oldTasks) => {
       const newItem = generateTaskObject(text.trim(), false, timeLeft, Date.now(), newItemId);
       const newTasksArray = [...oldTasks, newItem];
-      return newTasksArray ;
+      return newTasksArray;
     });
   };
 
   const renameItem = (text, id) => {
     if (!text) return;
-    setTasks(( oldTasks ) => {
+    setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const before = oldTasks.slice(0, idx);
       const after = oldTasks.slice(idx + 1);
       const newItem = generateTaskObject(text.trim(), false, oldTasks[idx].timeLeft, Date.now(), id);
       const newTasksArray = [...before, newItem, ...after];
-      return newTasksArray ;
+      return newTasksArray;
     });
   };
 
@@ -119,30 +120,42 @@ const App = () => {
         return res;
     }
   };
-  
- const updateTimers = () => {
-   setTasks((oldTasks)=>{
-    const newTasksArray = [...oldTasks];
-    for (let i = 0; i < newTasksArray.length; i++) {
-      if (newTasksArray[i].timeLeft > 1000 && newTasksArray[i].countdown) {
-        newTasksArray[i].timeLeft -= 1000;
-      } else if (newTasksArray[i].timeLeft <= 1000 && newTasksArray[i].countdown){
-        newTasksArray[i].timeLeft =1;
-        newTasksArray[i].countdown = false;
-      }   
-    }
-     localStorage.setItem('tasks', JSON.stringify(newTasksArray));
-     return newTasksArray
-    })
-  }
 
-  useEffect ( () => {
-    const interval = setInterval(updateTimers, 1000)
-    return () => clearInterval(interval)
-  },[ ])
+  const updateTimers = () => {
+    setTasks((oldTasks) => {
+      const newTasksArray = [...oldTasks];
+      for (let i = 0; i < newTasksArray.length; i++) {
+        if (newTasksArray[i].timeLeft > 1000 && newTasksArray[i].countdown) {
+          newTasksArray[i].timeLeft -= 1000;
+        } else if (newTasksArray[i].timeLeft <= 1000 && newTasksArray[i].countdown) {
+          newTasksArray[i].timeLeft = 1;
+          newTasksArray[i].countdown = false;
+        }
+      }
+      localStorage.setItem('tasks', JSON.stringify(newTasksArray));
+      return newTasksArray;
+    });
+  };
+
+  function hasActiveTimers() {
+    let activeTimers = 0;
+    for (let i = 0; i < tasksArray.length; i++) {
+      if (tasksArray[i].countdown) {
+        activeTimers += 1;
+      }
+    }
+    return activeTimers;
+  }
+  useEffect(() => {
+    const needUpdate = hasActiveTimers();
+    if (needUpdate) {
+      setTimeout(updateTimers, 1000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tasksArray]);
 
   const turnOnCountdown = (id) => {
-    setTasks(( oldTasks ) => {
+    setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const newTasksArray = [...oldTasks];
       newTasksArray[idx].countdown = true;
@@ -161,29 +174,27 @@ const App = () => {
   };
 
   return (
-    <MyContext.Provider value={applyFilter()}>
     <section className="todoapp">
       <NewTaskForm onItemAdded={(text, minuts, seconds) => addItem(text, minuts, seconds)} />
       <section className="main">
-        <TaskList
-          tasks={applyFilter()}
-          onDeleted={deleteItem}
-          onDone={markAsDone}
-          onRename={renameItem}
-          turnOffCountdown={turnOffCountdown}
-          turnOnCountdown={turnOnCountdown}
-        />
-        <Footer
-          filterTasks={filterTasks}
-          filterOption={filterOption}
-          count={count}
-          clearCompleted={removeAllCompleted}
-        />
+        <MyContext.Provider value={applyFilter()}>
+          <TaskList
+            onDeleted={deleteItem}
+            onDone={markAsDone}
+            onRename={renameItem}
+            turnOffCountdown={turnOffCountdown}
+            turnOnCountdown={turnOnCountdown}
+          />
+          <Footer
+            filterTasks={filterTasks}
+            filterOption={filterOption}
+            count={count}
+            clearCompleted={removeAllCompleted}
+          />
+        </MyContext.Provider>
       </section>
     </section>
-    </MyContext.Provider>
-
   );
-}
+};
 
 export default App;

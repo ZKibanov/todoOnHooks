@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
-import ruLocale from 'date-fns/locale/ru'
+import ruLocale from 'date-fns/locale/ru';
 import PropTypes from 'prop-types';
 import Timer from '../Timer';
 
-const Task = (props) =>{
+const Task = (props) => {
   const { description, created, onDeleted, onTimer, offTimer, timeLeft, onDone, countdown, completed } = props;
-  let {status} = props;
+  let { status } = props;
   const [editing, setEditing] = useState(false);
 
   const turnToEdit = () => {
@@ -43,7 +43,11 @@ const Task = (props) =>{
         <input className="toggle" type="checkbox" checked={completed} onChange={onDone} />
         <label>
           <span className="title">{description}</span>
-          <span className="created">{`создана ${ formatDistanceToNow(created, { addSuffix:true,locale:ruLocale, includeSeconds: true })}`}</span>
+          <span className="created">{`создана ${formatDistanceToNow(created, {
+            addSuffix: true,
+            locale: ruLocale,
+            includeSeconds: true,
+          })}`}</span>
           {timer}
         </label>
         <button aria-label="edit" type="button" className="icon icon-edit" onClick={turnToEdit} />
@@ -54,35 +58,34 @@ const Task = (props) =>{
       </form>
     </li>
   );
+};
 
-}
+Task.defaultProps = {
+  status: '',
+  created: Date.now(),
+  description: 'this task is missing',
+  completed: false,
+  timeLeft: 0,
+  countdown: false,
+  onRename: () => {},
+  onDeleted: () => {},
+  onDone: () => {},
+  onTimer: () => {},
+  offTimer: () => {},
+};
 
-  Task.defaultProps = {
-    status: '',
-    created: Date.now(),
-    description: 'this task is missing',
-    completed: false,
-    timeLeft: 0,
-    countdown: false,
-    onRename: () => {},
-    onDeleted: () => {},
-    onDone: () => {},
-    onTimer: () => {},
-    offTimer: () => {},
-  };
+Task.propTypes = {
+  description: PropTypes.string,
+  completed: PropTypes.bool,
+  status: PropTypes.string,
+  created: PropTypes.number,
+  onRename: PropTypes.func,
+  onDeleted: PropTypes.func,
+  onDone: PropTypes.func,
+  timeLeft: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  countdown: PropTypes.bool,
+  onTimer: PropTypes.func,
+  offTimer: PropTypes.func,
+};
 
-  Task.propTypes = {
-    description: PropTypes.string,
-    completed: PropTypes.bool,
-    status: PropTypes.string,
-    created: PropTypes.number,
-    onRename: PropTypes.func,
-    onDeleted: PropTypes.func,
-    onDone: PropTypes.func,
-    timeLeft: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    countdown: PropTypes.bool,
-    onTimer: PropTypes.func,
-    offTimer: PropTypes.func,
-  };
-
-  export default Task;
+export default Task;

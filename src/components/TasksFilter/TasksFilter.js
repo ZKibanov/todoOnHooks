@@ -17,7 +17,11 @@ const TasksFilter = (props) => {
   return (
     <ul className="filters">
       <li>
-        <button type="button" className={filterOption.filter === 'all' ? 'selected' : null} onClick={() => filterTasks('all')}>
+        <button
+          type="button"
+          className={filterOption.filter === 'all' ? 'selected' : null}
+          onClick={() => filterTasks('all')}
+        >
           All
         </button>
       </li>

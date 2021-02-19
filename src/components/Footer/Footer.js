@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import TasksFilter from '../TasksFilter';
 
 const Footer = (props) => {
-
   const { count, clearCompleted, filterTasks, filterOption } = props;
 
   return (

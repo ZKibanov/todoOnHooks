@@ -43,19 +43,19 @@ html .clear-completed:active {
 }
 
 .title {
-margin-right:auto;
+  margin-right: auto;
 }
 
 .description {
-position:absolute;
-left: 380px;
-top:10px;
-text-align: center;
-vertical-align: middle;
- padding-left: 5px;
+  position: absolute;
+  left: 380px;
+  top: 10px;
+  text-align: center;
+  vertical-align: middle;
+  padding-left: 5px;
 }
 
 .created {
-position:relative;
-top:20px;
+  position: relative;
+  top: 20px;
 }

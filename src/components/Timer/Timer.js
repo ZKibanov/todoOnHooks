@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import lightFormat from 'date-fns/lightFormat';
 
 const Timer = (props) => {
-  const {timeLeft,offTimer,onTimer, countdown} = props;
+  const { timeLeft, offTimer, onTimer, countdown } = props;
   const timerOff = () => {
     if (!countdown) return;
     offTimer(timeLeft);
@@ -13,7 +13,7 @@ const Timer = (props) => {
     if (countdown) return;
     onTimer();
   };
-  
+
   return (
     <div className="description">
       <button type="button" className="icon icon-play" onClick={timerOn} aria-label="start countdown" />{' '}
@@ -21,7 +21,7 @@ const Timer = (props) => {
       {lightFormat(new Date(timeLeft), ' mm-ss')}
     </div>
   );
-}
+};
 
 Timer.defaultProps = {
   onTimer: () => {},

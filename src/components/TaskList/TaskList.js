@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import MyContext from '../Context/Context';
 import Task from '../Task';
 
-const TaskList = ({ tasks, onDeleted, onDone, onRename, turnOnCountdown, turnOffCountdown }) => {
+const TaskList = ({ onDeleted, onDone, onRename, turnOnCountdown, turnOffCountdown }) => {
+  const tasks = useContext(MyContext);
   const renderedTasks = tasks.map((item) => {
     const { id, ...itemProps } = item;
     return (

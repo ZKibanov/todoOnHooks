@@ -2,30 +2,29 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 const NewTaskForm = (props) => {
+  const { onItemAdded } = props;
 
-const {onItemAdded} = props;
+  const [todoLabel, setTodoLabel] = useState('');
+  const [todoTimerMinuts, setTimerMinuts] = useState('');
+  const [todoTimerSeconds, setTimerSeconds] = useState('');
 
-const [todoLabel,setTodoLabel] = useState('');
-const [todoTimerMinuts, setTimerMinuts] = useState('');
-const [todoTimerSeconds, setTimerSeconds] = useState('');
+  const onFormSubmit = (ev) => {
+    ev.preventDefault();
+    onItemAdded(todoLabel, todoTimerMinuts, todoTimerSeconds);
+    setTodoLabel('');
+    setTimerMinuts('');
+    setTimerSeconds('');
+  };
 
-const onFormSubmit = (ev) => {
-  ev.preventDefault();
-  onItemAdded(todoLabel, todoTimerMinuts, todoTimerSeconds);
-  setTodoLabel('');
-  setTimerMinuts('');
-  setTimerSeconds('');
-};
+  const onLabelChange = (ev) => {
+    const { target } = ev;
+    const { value, name } = target;
+    if (name === 'todoLabel') setTodoLabel(value);
+    if (name === 'todoTimerMinuts') setTimerMinuts(value);
+    if (name === 'todoTimerSeconds') setTimerSeconds(value);
+  };
 
-const onLabelChange = (ev) => {
-  const { target } = ev;
-  const { value, name } = target;
-  if (name === 'todoLabel') setTodoLabel(value);
-  if (name === 'todoTimerMinuts') setTimerMinuts(value);
-  if (name === 'todoTimerSeconds') setTimerSeconds(value);
-};
-
-const searchText = 'Task';
+  const searchText = 'Task';
   return (
     <header className="header">
       <h1>todos</h1>
@@ -61,8 +60,7 @@ const searchText = 'Task';
       </form>
     </header>
   );
-}
-
+};
 
 NewTaskForm.defaultProps = {
   onItemAdded: () => {},
