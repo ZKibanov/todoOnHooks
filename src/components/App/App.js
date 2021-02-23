@@ -37,6 +37,7 @@ const App = () => {
   }
   const count = tasks.filter((el) => !el.completed).length;
   const [tasksArray, setTasks] = useState([]);
+  const [hasTimers,setCountdown] = useState(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setTasks(tasks), []);
@@ -146,15 +147,20 @@ const App = () => {
     }
     return activeTimers;
   }
+
   useEffect(() => {
-    const needUpdate = hasActiveTimers();
-    if (needUpdate) {
-      setTimeout(updateTimers, 1000);
+    let interval = null
+    if (hasTimers) {
+      interval = setInterval(updateTimers, 1000);
+    } else {
+      clearInterval(interval)
     }
+    return ()=>clearInterval(interval)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasksArray]);
+  }, [hasTimers]);
 
   const turnOnCountdown = (id) => {
+    if (!hasTimers) {setCountdown(true)}
     setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const newTasksArray = [...oldTasks];
@@ -164,6 +170,8 @@ const App = () => {
   };
 
   const turnOffCountdown = (id, date) => {
+    const timers = hasActiveTimers();
+    if ( timers === 1){setCountdown(false)}
     setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const newTasksArray = [...oldTasks];
