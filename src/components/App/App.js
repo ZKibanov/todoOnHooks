@@ -63,14 +63,26 @@ const App = () => {
       return newTasksArray;
     });
 
-  const deleteItem = (id) =>
+    function hasActiveTimers() {
+      let activeTimers = 0;
+      for (let i = 0; i < tasksArray.length; i++) {
+        if (tasksArray[i].countdown) {
+          activeTimers += 1;
+        }
+      }
+      return activeTimers;
+    }
+
+  const deleteItem = (id) =>{
+    const timersQuantity = hasActiveTimers();
+    if (timersQuantity <= 1) {setCountdown(false)}
     setTasks((oldTasks) => {
       const idx = findId(oldTasks, id);
       const before = oldTasks.slice(0, idx);
       const after = oldTasks.slice(idx + 1);
       const newTasksArray = [...before, ...after];
       return newTasksArray;
-    });
+    })};
 
   const filterTasks = (filter) => {
     setFilter({
@@ -122,6 +134,9 @@ const App = () => {
     }
   };
 
+
+ 
+
   const updateTimers = () => {
     setTasks((oldTasks) => {
       const newTasksArray = [...oldTasks];
@@ -131,22 +146,15 @@ const App = () => {
         } else if (newTasksArray[i].timeLeft <= 1000 && newTasksArray[i].countdown) {
           newTasksArray[i].timeLeft = 1;
           newTasksArray[i].countdown = false;
+          const timersQuantity = hasActiveTimers();
+          console.log(timersQuantity)
+          if (timersQuantity ===0) {setCountdown(false)}
         }
       }
       localStorage.setItem('tasks', JSON.stringify(newTasksArray));
       return newTasksArray;
     });
   };
-
-  function hasActiveTimers() {
-    let activeTimers = 0;
-    for (let i = 0; i < tasksArray.length; i++) {
-      if (tasksArray[i].countdown) {
-        activeTimers += 1;
-      }
-    }
-    return activeTimers;
-  }
 
   useEffect(() => {
     let interval = null
